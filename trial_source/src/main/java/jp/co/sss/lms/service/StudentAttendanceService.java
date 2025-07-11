@@ -1,6 +1,8 @@
 package jp.co.sss.lms.service;
 
 import java.text.ParseException;
+import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -251,6 +253,33 @@ public class StudentAttendanceService {
 					.dateToString(attendanceManagementDto.getTrainingDate(), "yyyy年M月d日(E)"));
 			dailyAttendanceForm.setStatusDispName(attendanceManagementDto.getStatusDispName());
 
+			if(attendanceManagementDto.getTrainingStartTime().isEmpty()) {
+				try {
+					LocalTime startTime = LocalTime.parse(attendanceManagementDto.getTrainingStartTime());
+					dailyAttendanceForm.setTrainingStartHour(startTime.getHour());
+					dailyAttendanceForm.setTrainingStartMin(startTime.getMinute());
+				}	catch (DateTimeParseException e) {
+					System.out.println("TrainingStartTimeのパースエラー ( ID:" + attendanceManagementDto.getStudentAttendanceId() + "):" + e.getMessage());
+					dailyAttendanceForm.setTrainingStartHour(null);
+					dailyAttendanceForm.setTrainingStartMin(null);
+				}	
+			}
+			
+			if(attendanceManagementDto.getTrainingEndTime() != null
+				&& !attendanceManagementDto.getTrainingEndTime().isEmpty()) {
+					try {
+						LocalTime endTime = LocalTime.parse(attendanceManagementDto.getTrainingEndTime());
+						dailyAttendanceForm.setTrainingEndHour(endTime.getHour());
+						dailyAttendanceForm.setTrainingStartMin(endTime.getMinute());
+					}	catch (DateTimeParseException e) {
+						System.err.println("TrainingEndTimeのパースエラー ( ID:" + attendanceManagementDto.getStudentAttendanceId() + "):" + e.getMessage());
+						dailyAttendanceForm.setTrainingEndHour(null);
+						dailyAttendanceForm.setTrainingEndMin(null);
+					}
+					
+				}
+				
+			
 			attendanceForm.getAttendanceList().add(dailyAttendanceForm);
 		}
 

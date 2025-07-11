@@ -1,6 +1,7 @@
 package jp.co.sss.lms.controller;
 
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import jp.co.sss.lms.dto.AttendanceManagementDto;
 import jp.co.sss.lms.dto.LoginUserDto;
 import jp.co.sss.lms.form.AttendanceForm;
+import jp.co.sss.lms.mapper.AttendanceMapper;
 import jp.co.sss.lms.service.StudentAttendanceService;
 import jp.co.sss.lms.util.Constants;
 
@@ -29,6 +31,9 @@ public class AttendanceController {
 	private StudentAttendanceService studentAttendanceService;
 	@Autowired
 	private LoginUserDto loginUserDto;
+	
+	@Autowired
+	private AttendanceMapper attenDanceMapper;
 
 	/**
 	 * 勤怠管理画面 初期表示
@@ -46,9 +51,25 @@ public class AttendanceController {
 		List<AttendanceManagementDto> attendanceManagementDtoList = studentAttendanceService
 				.getAttendanceManagement(loginUserDto.getCourseId(), loginUserDto.getLmsUserId());
 		model.addAttribute("attendanceManagementDtoList", attendanceManagementDtoList);
-
+		
+		//過去の勤怠日の未入力のチェック
+	
+		LocalDate today = LocalDate.now();
+		
+		int deleteFlg = 0;
+		
+		int notEnterCount = attenDanceMapper.notEnterCount(today, loginUserDto.getLmsUserId(),
+		deleteFlg);
+		
+		//未入力有無の判定を行う
+		
+		boolean hasNotEntries = notEnterCount > 0;
+		model.addAttribute("hasNotEntries",hasNotEntries );
 		return "attendance/detail";
 	}
+	
+	
+	
 
 	/**
 	 * 勤怠管理画面 『出勤』ボタン押下
@@ -143,5 +164,7 @@ public class AttendanceController {
 
 		return "attendance/detail";
 	}
+	
+	
 
 }
