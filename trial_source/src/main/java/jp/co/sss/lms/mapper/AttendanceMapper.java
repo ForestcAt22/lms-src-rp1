@@ -20,8 +20,9 @@ public interface AttendanceMapper {
 	@Select("SELECT COUNT(*) FROM t_student_attendance " +
             "WHERE lms_user_id = #{lmsUserId} " +		//勤怠情報　lmsユーザID
 			"And delete_flg = #{deleteFlg} " +		//勤怠情報　削除フラグ
-            "AND training_date < #{currentDate} " +		//勤怠情報　日付
-			"AND attendance_stuts != 1 " +		//勤怠情報　勤怠状態
+            "AND training_date < #{currentdate} " +		//勤怠情報　日付
+			"AND status != 1 " +		//勤怠情報　勤怠状態
+            "AND (status != 1 OR status IS NULL)" + 
             "AND (training_start_time IS NULL OR training_end_time IS NULL OR " +
 			" training_start_time = '' OR training_end_time = '')")
     int notEnterCount(

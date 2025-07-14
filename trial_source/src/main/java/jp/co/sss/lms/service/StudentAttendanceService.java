@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -253,32 +252,36 @@ public class StudentAttendanceService {
 					.dateToString(attendanceManagementDto.getTrainingDate(), "yyyy年M月d日(E)"));
 			dailyAttendanceForm.setStatusDispName(attendanceManagementDto.getStatusDispName());
 
-			if(attendanceManagementDto.getTrainingStartTime().isEmpty()) {
+			if(attendanceManagementDto.getTrainingStartTime() != null && !attendanceManagementDto.getTrainingEndTime().isEmpty()){
 				try {
 					LocalTime startTime = LocalTime.parse(attendanceManagementDto.getTrainingStartTime());
 					dailyAttendanceForm.setTrainingStartHour(startTime.getHour());
-					dailyAttendanceForm.setTrainingStartMin(startTime.getMinute());
+					dailyAttendanceForm.setTrainingStartMinute(startTime.getMinute());
 				}	catch (DateTimeParseException e) {
 					System.out.println("TrainingStartTimeのパースエラー ( ID:" + attendanceManagementDto.getStudentAttendanceId() + "):" + e.getMessage());
 					dailyAttendanceForm.setTrainingStartHour(null);
-					dailyAttendanceForm.setTrainingStartMin(null);
-				}	
-			}
+					dailyAttendanceForm.setTrainingStartMinute(null);
+					}
+				}else {
+					dailyAttendanceForm.setTrainingStartHour(null);
+					dailyAttendanceForm.setTrainingStartMinute(null);				
+				}
 			
-			if(attendanceManagementDto.getTrainingEndTime() != null
-				&& !attendanceManagementDto.getTrainingEndTime().isEmpty()) {
+			if(attendanceManagementDto.getTrainingEndTime() != null && !attendanceManagementDto.getTrainingEndTime().isEmpty()) {
 					try {
 						LocalTime endTime = LocalTime.parse(attendanceManagementDto.getTrainingEndTime());
 						dailyAttendanceForm.setTrainingEndHour(endTime.getHour());
-						dailyAttendanceForm.setTrainingStartMin(endTime.getMinute());
+						dailyAttendanceForm.setTrainingEndMinute(endTime.getMinute());
 					}	catch (DateTimeParseException e) {
 						System.err.println("TrainingEndTimeのパースエラー ( ID:" + attendanceManagementDto.getStudentAttendanceId() + "):" + e.getMessage());
 						dailyAttendanceForm.setTrainingEndHour(null);
-						dailyAttendanceForm.setTrainingEndMin(null);
+						dailyAttendanceForm.setTrainingEndMinute(null);
 					}
+				}else {
+					dailyAttendanceForm.setTrainingEndHour(null);
+					dailyAttendanceForm.setTrainingEndMinute(null);
 					
-				}
-				
+				}	
 			
 			attendanceForm.getAttendanceList().add(dailyAttendanceForm);
 		}
@@ -309,7 +312,7 @@ public class StudentAttendanceService {
 			// 更新用エンティティ作成
 			TStudentAttendance tStudentAttendance = new TStudentAttendance();
 			// 日次勤怠フォームから更新用のエンティティにコピー
-			BeanUtils.copyProperties(dailyAttendanceForm, tStudentAttendance);
+		//	BeanUtils.copyProperties(dailyAttendanceForm, tStudentAttendance);
 			// 研修日付
 			tStudentAttendance
 					.setTrainingDate(dateUtil.parse(dailyAttendanceForm.getTrainingDate()));
@@ -322,14 +325,44 @@ public class StudentAttendanceService {
 			}
 			tStudentAttendance.setLmsUserId(lmsUserId);
 			tStudentAttendance.setAccountId(loginUserDto.getAccountId());
-			// 出勤時刻整形
+			
 			TrainingTime trainingStartTime = null;
-			trainingStartTime = new TrainingTime(dailyAttendanceForm.getTrainingStartTime());
-			tStudentAttendance.setTrainingStartTime(trainingStartTime.getFormattedString());
-			// 退勤時刻整形
-			TrainingTime trainingEndTime = null;
-			trainingEndTime = new TrainingTime(dailyAttendanceForm.getTrainingEndTime());
-			tStudentAttendance.setTrainingEndTime(trainingEndTime.getFormattedString());
+			if(dailyAttendanceForm.getTrainingStartHour() != null && dailyAttendanceForm.getTrainingStartMinute() != null) {
+			try {
+				LocalTime localStartTime = LocalTime.of(dailyAttendanceForm.getTrainingStartHour(), dailyAttendanceForm.getTrainingStartMinute());
+				trainingStartTime = new TrainingTime(localStartTime.getHour(),localStartTime.getMinute());
+				tStudentAttendance.setTrainingStartTime(trainingStartTime.getFormattedString());
+				} catch (Exception e) {
+				System.out.println("出勤時刻のTrainingTime生成エラー (ID：" + dailyAttendanceForm.getStudentAttendanceId() + ")：" + e.getMessage());
+				tStudentAttendance.setTrainingStartTime(""); //エラー時は空文字
+				}
+			} else {
+				tStudentAttendance.setTrainingStartTime("");
+			}
+			
+			TrainingTime trainingEndTime=null;
+			if(dailyAttendanceForm.getTrainingEndHour() != null && dailyAttendanceForm.getTrainingEndMinute() != null) {
+				try {
+					LocalTime localEndTime = LocalTime.of(dailyAttendanceForm.getTrainingEndHour(), dailyAttendanceForm.getTrainingEndMinute());
+					trainingEndTime = new TrainingTime(localEndTime.getHour(), localEndTime.getMinute());
+					tStudentAttendance.setTrainingEndTime(trainingEndTime.getFormattedString());
+				} catch (Exception e) {
+					System.out.println("退勤時刻のTrainingTime生成エラー (ID:" + dailyAttendanceForm.getStudentAttendanceId() + ")：" + e.getMessage());
+					tStudentAttendance.setTrainingEndTime("");
+				}
+			} else {
+				tStudentAttendance.setTrainingEndTime(""); //時刻が入力されていない
+			}
+			
+			
+//			// 出勤時刻整形
+//			TrainingTime trainingStartTime = null;
+//			trainingStartTime = new TrainingTime(dailyAttendanceForm.getTrainingStartTime());
+//			tStudentAttendance.setTrainingStartTime(trainingStartTime.getFormattedString());
+//			// 退勤時刻整形
+//			TrainingTime trainingEndTime = null;
+//			trainingEndTime = new TrainingTime(dailyAttendanceForm.getTrainingEndTime());
+//			tStudentAttendance.setTrainingEndTime(trainingEndTime.getFormattedString());
 			// 中抜け時間
 			tStudentAttendance.setBlankTime(dailyAttendanceForm.getBlankTime());
 			// 遅刻早退ステータス

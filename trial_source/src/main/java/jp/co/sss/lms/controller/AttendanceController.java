@@ -2,6 +2,7 @@ package jp.co.sss.lms.controller;
 
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -138,6 +139,11 @@ public class AttendanceController {
 				.setAttendanceForm(attendanceManagementDtoList);
 		model.addAttribute("attendanceForm", attendanceForm);
 
+		List<String> blankTimes = Arrays.asList("09:00","10:00","11:00");
+		model.addAttribute("blankTime",blankTimes);
+		
+		model.addAttribute("blankTime", "00:00");
+		
 		return "attendance/update";
 	}
 
