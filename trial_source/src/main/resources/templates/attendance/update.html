@@ -22,7 +22,8 @@
 	<div class="row">
 		<div class="bs-component col-sm-12">
 
-			<form th:action="@{/attendance/update}" method="post" th:object="${attendanceForm}">
+			<form th:action="@{/attendance/update}" method="post" th:object="${attendanceForm}"
+				id="attendanceUpdateForm">
 				<table class="table table-hover dataTable no-footer">
 					<thead>
 						<tr>
@@ -39,17 +40,17 @@
 						<th:block th:each="dailyAttendanceForm, stat : *{attendanceList}">
 							<tr>
 								<th:block>
-									<input type="hidden" th:name="|attendanceList[${stat.index}].isToday|"
+									<input type="hidden" th:field="*{attendanceList[__${stat.index}__].isToday}"
 										th:value="${dailyAttendanceForm.isToday}" />
-									<input type="hidden" th:name="|attendanceList[${stat.index}].studentAttendanceId|"
+									<input type="hidden" th:field="*{attendanceList[__${stat.index}__].studentAttendanceId}"
 										th:value="${dailyAttendanceForm.studentAttendanceId}" />
-									<input type="hidden" th:name="|attendanceList[${stat.index}].trainingDate|"
+									<input type="hidden" th:field="*{attendanceList[__${stat.index}__].trainingDate}"
 										th:value="${dailyAttendanceForm.trainingDate}" />
-									<input type="hidden" th:name="|attendanceList[${stat.index}].dispTrainingDate|"
+									<input type="hidden" th:field="*{attendanceList[__${stat.index}__].dispTrainingDate}"
 										th:value="${dailyAttendanceForm.dispTrainingDate}" />
-									<input type="hidden" th:name="|attendanceList[${stat.index}].sectionName|"
+									<input type="hidden" th:field="*{attendanceList[__${stat.index}__].sectionName}"
 										th:value="${dailyAttendanceForm.sectionName}" />
-									<input type="hidden" th:name="|attendanceList[${stat.index}].statusDispName|"
+									<input type="hidden" th:field="*{attendanceList[__${stat.index}__].statusDispName}"
 										th:value="${dailyAttendanceForm.statusDispName}" />
 								</th:block>
 								<td class="w140">[[${dailyAttendanceForm.dispTrainingDate}]]</td>
@@ -71,6 +72,11 @@
 											th:text="${#numbers.formatInteger(i,2)}"
 											th:selected="${i == dailyAttendanceForm.trainingStartMinute}"></option>
 									</select>
+<!--									<span-->
+<!--										th:if="${#fields.hasErrors('attendanceList[' + stat.index + '].trainingStartHour')}"-->
+<!--										th:errors="*{attendanceList[__${stat.index}__].trainingStartHour}"-->
+<!--										class="text-danger">-->
+<!--									</span>-->
 								</td>
 
 								<td class="w200">
@@ -89,6 +95,11 @@
 											th:text="${#numbers.formatInteger(i,2)}"
 											th:selected="${i == dailyAttendanceForm.trainingEndMinute}"></option>
 									</select>
+<!--									<span-->
+<!--										th:if="${#fields.hasErrors('attendanceList[' + stat.index + '].trainingEndHour')}"-->
+<!--										th:errors="*{attendanceList[__${stat.index}__].trainingEndHour}"-->
+<!--										class="text-danger">-->
+<!--									</span>-->
 								</td>
 
 								<td class="w200">
@@ -104,8 +115,11 @@
 
 								<td class="w70">[[${dailyAttendanceForm.statusDispName}]]</td>
 								<td class="w240">
-									<input type="text" th:name="|attendanceList[${stat.index}].note|"
-										th:value="${dailyAttendanceForm.note}" class="form-control"></input>
+									<input type="text" th:field="*{attendanceList[__${stat.index}__].note}"
+										class="form-control"></input>
+<!--									<span th:if="${#fields.hasErrors('attendanceList[' + stat.index + '].note')}"-->
+<!--										th:errors="*{attendanceList[__${stat.index}__].note}" class="text-danger">-->
+<!--									</span>-->
 								</td>
 							</tr>
 						</th:block>
@@ -119,13 +133,31 @@
 					<th:block th:if="${session.loginUserDto.role != '0001'}">
 						<input type="submit" value="戻る" name="indexCompany" class="btn btn-default" />
 					</th:block>
-					<input type="submit" value="更新" name="complete" class="btn btn-info" />
+					<input type="button" value="更新" name="complete" class="btn btn-info" id="updateButton" />
 				</div>
 
 			</form>
 		</div>
 	</div>
+	<script type="text/javascript">
+		document.addEventListener('DOMContentLoaded', function () {
+			const updateButton = document.getElementById('updateButton');
+			const attendanceUpdateForm = document.getElementById('attendanceUpdateForm');
 
+			//ダイアログを表示
+			if (updateButton && attendanceUpdateForm) {
+				updateButton.onclick = function () {
+
+					if (confirm('更新します。よろしいですか？')) {
+						//ONの場合フォームに送信
+						attendanceUpdateForm.submit();
+					}
+				};
+			} else {
+				console.error('見つかりません');
+			}
+		});
+	</script>
 </body>
 
 </html>

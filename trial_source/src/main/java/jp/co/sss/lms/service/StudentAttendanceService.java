@@ -236,9 +236,9 @@ public class StudentAttendanceService {
 					.setStudentAttendanceId(attendanceManagementDto.getStudentAttendanceId());
 			dailyAttendanceForm
 					.setTrainingDate(dateUtil.toString(attendanceManagementDto.getTrainingDate()));
-			dailyAttendanceForm
-					.setTrainingStartTime(attendanceManagementDto.getTrainingStartTime());
-			dailyAttendanceForm.setTrainingEndTime(attendanceManagementDto.getTrainingEndTime());
+//			dailyAttendanceForm
+//					.setTrainingStartTime(attendanceManagementDto.getTrainingStartTime());
+//			dailyAttendanceForm.setTrainingEndTime(attendanceManagementDto.getTrainingEndTime());
 			if (attendanceManagementDto.getBlankTime() != null) {
 				dailyAttendanceForm.setBlankTime(attendanceManagementDto.getBlankTime());
 				dailyAttendanceForm.setBlankTimeValue(String.valueOf(

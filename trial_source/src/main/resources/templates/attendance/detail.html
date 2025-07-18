@@ -79,12 +79,12 @@
 			setInterval(function() {
 				$("#now").text('現在の時刻は　' + getClock() + '　です。');
 			}, 1000);
-			/*<![CDATA[*/
-			const hasMissingEntries =/*[[${hasNotEntries}]]*/ false;
+
+			const hasMissingEntries =[$[{hasNotEntries}]];
 			if (hasMissingEntries) {
 				alert("過去の勤怠日に未入力があります。")
 			}
-			/*]]>*/
+
 		});
 		function getClock() {
 			const today =  new Date();
