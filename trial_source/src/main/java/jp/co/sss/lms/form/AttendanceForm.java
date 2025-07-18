@@ -2,6 +2,7 @@ package jp.co.sss.lms.form;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import jakarta.validation.Valid;
 import lombok.Data;
@@ -29,7 +30,7 @@ public class AttendanceForm {
 	/** 退校日（表示用） */
 	private String dispLeaveDate;
 	/** 中抜け時間(プルダウン) */
-	private LinkedHashMap<Integer, String> blankTimes;
+	private Map<Integer , String> BlankTimes = new LinkedHashMap<>();
 	/** 日次の勤怠フォームリスト */
 	@Valid
 	private List<DailyAttendanceForm> attendanceList;

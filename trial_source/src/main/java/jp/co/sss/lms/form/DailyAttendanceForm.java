@@ -20,14 +20,18 @@ public class DailyAttendanceForm {
 	/** 出勤時間 */
 	private String trainingStartTime;
 	/** 出勤時刻（時) */
+//	@NotNull(message="{0}は必須です。",groups = ValidationGroup.class)
 	private Integer trainingStartHour;
 	/** 出勤時間（分）*/
+//	@NotNull(message="{0}は必須です。",groups = ValidationGroup.class)
 	private Integer trainingStartMinute;
 	/** 退勤時間 */
 	private String trainingEndTime;
 	/** 退勤時間（時）*/
+//	@NotNull(message="{0}は必須です。",groups = ValidationGroup.class)
 	private Integer trainingEndHour;
 	/** 退勤時間（分）*/
+//	@NotNull(message="{0}は必須です。",groups = ValidationGroup.class)
 	private Integer trainingEndMinute;
 	/** 中抜け時間 */
 	private Integer blankTime;

@@ -5,7 +5,9 @@ import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -219,14 +221,17 @@ public class StudentAttendanceService {
 		attendanceForm.setLmsUserId(loginUserDto.getLmsUserId());
 		attendanceForm.setUserName(loginUserDto.getUserName());
 		attendanceForm.setLeaveFlg(loginUserDto.getLeaveFlg());
-		attendanceForm.setBlankTimes(attendanceUtil.setBlankTime());
+		Map<Integer, String> blankTimesMap = attendanceUtil.setBlankTime();
+		if (blankTimesMap == null) {
+		    attendanceForm.setBlankTimes(new LinkedHashMap<>()); // ユーティリティが null を返す場合、空のMapを設定
+		} else {
+		    attendanceForm.setBlankTimes(blankTimesMap);
+		}
 
 		// 途中退校している場合のみ設定
 		if (loginUserDto.getLeaveDate() != null) {
-			attendanceForm
-					.setLeaveDate(dateUtil.dateToString(loginUserDto.getLeaveDate(), "yyyy-MM-dd"));
-			attendanceForm.setDispLeaveDate(
-					dateUtil.dateToString(loginUserDto.getLeaveDate(), "yyyy年M月d日"));
+			attendanceForm.setLeaveDate(dateUtil.dateToString(loginUserDto.getLeaveDate(), "yyyy-MM-dd"));
+			attendanceForm.setDispLeaveDate(dateUtil.dateToString(loginUserDto.getLeaveDate(), "yyyy年M月d日"));
 		}
 
 		// 勤怠管理リストの件数分、日次の勤怠フォームに移し替え

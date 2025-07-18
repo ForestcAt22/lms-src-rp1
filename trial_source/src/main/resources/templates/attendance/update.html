@@ -17,18 +17,33 @@
 		<th:block th:if="${session.loginUserDto.leaveFlg == '1'}">
 			<h2><small>途中退校日：[[${dispLeaveDate}]]</small></h2>
 		</th:block>
-	</th:block>
+		</th:block>
 
+<!--	<th:block th:if="${#fields.hasErrors('attendanceForm*')}" id="error">-->
+<!--		<ul style="padding-left: 0; list-style: none;">-->
+<!--			<li th:each="err : ${#fields.errors('attendanceForm*')}">-->
+<!--				<span th:text="'*' + '&nbsp;' + ${err}" class="help-inline text-danger"></span>-->
+<!--			</li>-->
+<!--		</ul>-->
+<!--	</th:block>-->
 	<div class="row">
 		<div class="bs-component col-sm-12">
 
 			<form th:action="@{/attendance/update}" method="post" th:object="${attendanceForm}"
 				id="attendanceUpdateForm">
+				<th:block th:if="${#fields.hasErrors('attendanceForm*')}" id="error">
+					<ul style="padding-left: 0; list-style: none;">
+						<li th:each="err : ${#fields.errors('attendanceForm*')}">
+							<span th:text="'*' + '&nbsp;' + ${err}" class="help-inline text-danger"></span>
+						</li>
+					</ul>
+				</th:block>
 				<table class="table table-hover dataTable no-footer">
 					<thead>
 						<tr>
 							<th class="w140">日付</th>
 							<th class="w300">コース内容</th>
+							<th class="w50"></th>
 							<th class="w70">出勤</th>
 							<th class="w70">退勤</th>
 							<th class="w80">中抜け時間</th>
@@ -42,11 +57,13 @@
 								<th:block>
 									<input type="hidden" th:field="*{attendanceList[__${stat.index}__].isToday}"
 										th:value="${dailyAttendanceForm.isToday}" />
-									<input type="hidden" th:field="*{attendanceList[__${stat.index}__].studentAttendanceId}"
+									<input type="hidden"
+										th:field="*{attendanceList[__${stat.index}__].studentAttendanceId}"
 										th:value="${dailyAttendanceForm.studentAttendanceId}" />
 									<input type="hidden" th:field="*{attendanceList[__${stat.index}__].trainingDate}"
 										th:value="${dailyAttendanceForm.trainingDate}" />
-									<input type="hidden" th:field="*{attendanceList[__${stat.index}__].dispTrainingDate}"
+									<input type="hidden"
+										th:field="*{attendanceList[__${stat.index}__].dispTrainingDate}"
 										th:value="${dailyAttendanceForm.dispTrainingDate}" />
 									<input type="hidden" th:field="*{attendanceList[__${stat.index}__].sectionName}"
 										th:value="${dailyAttendanceForm.sectionName}" />
@@ -55,6 +72,9 @@
 								</th:block>
 								<td class="w140">[[${dailyAttendanceForm.dispTrainingDate}]]</td>
 								<td class="w300">[[${dailyAttendanceForm.sectionName}]]</td>
+								<td class="w50"><button type="button" class="btn btn-default btn-sm set-standard-time-btn"
+										th:data-row-index="${stat.index}">定時</button>
+								</td>
 
 								<td class="w200">
 									<select th:field="*{attendanceList[__${stat.index}__].trainingStartHour}"
@@ -72,11 +92,16 @@
 											th:text="${#numbers.formatInteger(i,2)}"
 											th:selected="${i == dailyAttendanceForm.trainingStartMinute}"></option>
 									</select>
-<!--									<span-->
-<!--										th:if="${#fields.hasErrors('attendanceList[' + stat.index + '].trainingStartHour')}"-->
-<!--										th:errors="*{attendanceList[__${stat.index}__].trainingStartHour}"-->
-<!--										class="text-danger">-->
-<!--									</span>-->
+									<span
+										th:if="${#fields.hasErrors('attendanceList[' + stat.index + '].trainingStartHour')}"
+										th:errors="*{attendanceList[__${stat.index}__].trainingStartHour}"
+										class="text-danger">
+										<span
+											th:if="${#fields.hasErrors('attendanceList[' + stat.index + '].trainingStartMinute')}"
+											th:errors="*{attendanceList[__${stat.index}__].trainingStartMinute}"
+											class="text-danger">
+										</span>
+									</span>
 								</td>
 
 								<td class="w200">
@@ -95,17 +120,22 @@
 											th:text="${#numbers.formatInteger(i,2)}"
 											th:selected="${i == dailyAttendanceForm.trainingEndMinute}"></option>
 									</select>
-<!--									<span-->
-<!--										th:if="${#fields.hasErrors('attendanceList[' + stat.index + '].trainingEndHour')}"-->
-<!--										th:errors="*{attendanceList[__${stat.index}__].trainingEndHour}"-->
-<!--										class="text-danger">-->
-<!--									</span>-->
+									<span
+										th:if="${#fields.hasErrors('attendanceList[' + stat.index + '].trainingEndHour')}"
+										th:errors="*{attendanceList[__${stat.index}__].trainingEndHour}"
+										class="text-danger">
+										<span
+											th:if="${#fields.hasErrors('attendanceList[' + stat.index + '].trainingEndMinute')}"
+											th:errors="*{attendanceList[__${stat.index}__].trainingEndMinute}"
+											class="text-danger">
+										</span>
+									</span>
 								</td>
 
 								<td class="w200">
 									<select th:field="*{attendanceList[__${stat.index}__].blankTime}"
 										class="form-control">
-										<option th:each="entry : ${attendanceForm.blankTimes.entrySet()}"
+										<option th:each="entry : ${attendanceForm.BlankTimes.entrySet()}"
 											th:value="${entry.key}"
 											th:selected="${entry.key == dailyAttendanceForm.blankTime}"
 											th:text="${entry.value}">
@@ -117,9 +147,9 @@
 								<td class="w240">
 									<input type="text" th:field="*{attendanceList[__${stat.index}__].note}"
 										class="form-control"></input>
-<!--									<span th:if="${#fields.hasErrors('attendanceList[' + stat.index + '].note')}"-->
-<!--										th:errors="*{attendanceList[__${stat.index}__].note}" class="text-danger">-->
-<!--									</span>-->
+									<span th:if="${#fields.hasErrors('attendanceList[' + stat.index + '].note')}"
+										th:errors="*{attendanceList[__${stat.index}__].note}" class="text-danger">
+									</span>
 								</td>
 							</tr>
 						</th:block>
@@ -144,6 +174,26 @@
 			const updateButton = document.getElementById('updateButton');
 			const attendanceUpdateForm = document.getElementById('attendanceUpdateForm');
 
+			//ボタンのイベントを設定
+			document.querySelectorAll('.set-standard-time-btn').forEach(button => {
+				button.addEventListener('click', function() {
+					// クリックされた行のインデックスを取得
+					const rowIndex = this.dataset.rowIndex; 
+					
+					// 該当する行のselect 要素を特定
+					const startHourSelect = document.querySelector(`select[name='attendanceList[${rowIndex}].trainingStartHour']`);
+					const startMinuteSelect = document.querySelector(`select[name='attendanceList[${rowIndex}].trainingStartMinute']`);
+					const endHourSelect = document.querySelector(`select[name='attendanceList[${rowIndex}].trainingEndHour']`);
+					const endMinuteSelect = document.querySelector(`select[name='attendanceList[${rowIndex}].trainingEndMinute']`);
+
+					// 定時 (9:00 - 18:00) を設定
+					if (startHourSelect) startHourSelect.value = '9';
+					if (startMinuteSelect) startMinuteSelect.value = '0';
+					if (endHourSelect) endHourSelect.value = '18';
+					if (endMinuteSelect) endMinuteSelect.value = '0';
+				});
+			});
+
 			//ダイアログを表示
 			if (updateButton && attendanceUpdateForm) {
 				updateButton.onclick = function () {
@@ -154,7 +204,7 @@
 					}
 				};
 			} else {
-				console.error('見つかりません');
+				console.error('フォームが見つかりません。');
 			}
 		});
 	</script>
