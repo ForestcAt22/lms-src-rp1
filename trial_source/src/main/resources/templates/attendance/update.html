@@ -17,25 +17,18 @@
 		<th:block th:if="${session.loginUserDto.leaveFlg == '1'}">
 			<h2><small>途中退校日：[[${dispLeaveDate}]]</small></h2>
 		</th:block>
-		</th:block>
+	</th:block>
 
-<!--	<th:block th:if="${#fields.hasErrors('attendanceForm*')}" id="error">-->
-<!--		<ul style="padding-left: 0; list-style: none;">-->
-<!--			<li th:each="err : ${#fields.errors('attendanceForm*')}">-->
-<!--				<span th:text="'*' + '&nbsp;' + ${err}" class="help-inline text-danger"></span>-->
-<!--			</li>-->
-<!--		</ul>-->
-<!--	</th:block>-->
 	<div class="row">
 		<div class="bs-component col-sm-12">
 
 			<form th:action="@{/attendance/update}" method="post" th:object="${attendanceForm}"
 				id="attendanceUpdateForm">
-				<th:block th:if="${#fields.hasErrors('attendanceForm*')}" id="error">
+
+				<th:block th:if="${#fields.hasErrors()}" id="error">
 					<ul style="padding-left: 0; list-style: none;">
-						<li th:each="err : ${#fields.errors('attendanceForm*')}">
-							<span th:text="'*' + '&nbsp;' + ${err}" class="help-inline text-danger"></span>
-						</li>
+						<li class="text-danger" th:each="error : ${#fields.globalErrors()}" th:text="${error}"></li>
+						<li class="text-danger" th:each="error : ${#fields.errors()}" th:text="${error}"></li>
 					</ul>
 				</th:block>
 				<table class="table table-hover dataTable no-footer">
@@ -72,11 +65,13 @@
 								</th:block>
 								<td class="w140">[[${dailyAttendanceForm.dispTrainingDate}]]</td>
 								<td class="w300">[[${dailyAttendanceForm.sectionName}]]</td>
-								<td class="w50"><button type="button" class="btn btn-default btn-sm set-standard-time-btn"
+								<td class="w50"><button type="button"
+										class="btn btn-default btn-sm set-standard-time-btn"
 										th:data-row-index="${stat.index}">定時</button>
 								</td>
 
 								<td class="w200">
+<!--									出勤時間（時）のプルダウン表示-->
 									<select th:field="*{attendanceList[__${stat.index}__].trainingStartHour}"
 										class="form-control" style="display: inline-block; width: 45%;">
 										<option value="">--</option>
@@ -85,6 +80,7 @@
 											th:selected="${i == dailyAttendanceForm.trainingStartHour}"></option>
 									</select>
 									:
+<!--									出勤時間（分）のプルダウン表示-->
 									<select th:field="*{attendanceList[__${stat.index}__].trainingStartMinute}"
 										class="form-control" style="display: inline-block; width: 45%;">
 										<option value="">--</option>
@@ -92,19 +88,10 @@
 											th:text="${#numbers.formatInteger(i,2)}"
 											th:selected="${i == dailyAttendanceForm.trainingStartMinute}"></option>
 									</select>
-									<span
-										th:if="${#fields.hasErrors('attendanceList[' + stat.index + '].trainingStartHour')}"
-										th:errors="*{attendanceList[__${stat.index}__].trainingStartHour}"
-										class="text-danger">
-										<span
-											th:if="${#fields.hasErrors('attendanceList[' + stat.index + '].trainingStartMinute')}"
-											th:errors="*{attendanceList[__${stat.index}__].trainingStartMinute}"
-											class="text-danger">
-										</span>
-									</span>
 								</td>
 
 								<td class="w200">
+<!--									退勤時間（時）のプルダウン表示-->
 									<select th:field="*{attendanceList[__${stat.index}__].trainingEndHour}"
 										class="form-control" style="display: inline-block; width: 45%;">
 										<option value="">--</option>
@@ -113,6 +100,7 @@
 											th:selected="${i == dailyAttendanceForm.trainingEndHour}"></option>
 									</select>
 									:
+<!--									退勤時間（分）のプルダウン表示-->
 									<select th:field="*{attendanceList[__${stat.index}__].trainingEndMinute}"
 										class="form-control" style="display: inline-block; width: 45%;">
 										<option value="">--</option>
@@ -120,16 +108,6 @@
 											th:text="${#numbers.formatInteger(i,2)}"
 											th:selected="${i == dailyAttendanceForm.trainingEndMinute}"></option>
 									</select>
-									<span
-										th:if="${#fields.hasErrors('attendanceList[' + stat.index + '].trainingEndHour')}"
-										th:errors="*{attendanceList[__${stat.index}__].trainingEndHour}"
-										class="text-danger">
-										<span
-											th:if="${#fields.hasErrors('attendanceList[' + stat.index + '].trainingEndMinute')}"
-											th:errors="*{attendanceList[__${stat.index}__].trainingEndMinute}"
-											class="text-danger">
-										</span>
-									</span>
 								</td>
 
 								<td class="w200">
@@ -176,15 +154,21 @@
 
 			//ボタンのイベントを設定
 			document.querySelectorAll('.set-standard-time-btn').forEach(button => {
-				button.addEventListener('click', function() {
+				button.addEventListener('click', function () {
+
 					// クリックされた行のインデックスを取得
-					const rowIndex = this.dataset.rowIndex; 
-					
+					const rowIndex = this.dataset.rowIndex;
+
 					// 該当する行のselect 要素を特定
 					const startHourSelect = document.querySelector(`select[name='attendanceList[${rowIndex}].trainingStartHour']`);
 					const startMinuteSelect = document.querySelector(`select[name='attendanceList[${rowIndex}].trainingStartMinute']`);
 					const endHourSelect = document.querySelector(`select[name='attendanceList[${rowIndex}].trainingEndHour']`);
 					const endMinuteSelect = document.querySelector(`select[name='attendanceList[${rowIndex}].trainingEndMinute']`);
+
+					//定時ボタンの背景を緑色
+					//button.style.backgroundColor = 'green';
+					//定時ボタンの文字色を白色
+					//button.style.color = 'white';
 
 					// 定時 (9:00 - 18:00) を設定
 					if (startHourSelect) startHourSelect.value = '9';

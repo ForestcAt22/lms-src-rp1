@@ -1,6 +1,7 @@
 package jp.co.sss.lms.service;
 
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -74,6 +75,19 @@ public class StudentAttendanceService {
 		}
 
 		return attendanceManagementDtoList;
+	}
+	
+	/**
+     * 過去の勤怠未入力件数を取得します。
+     *
+     * @param lmsUserId 対象のLMSユーザーID
+     * @return 未入力勤怠の件数
+     */
+	public int getNotEnteresAttendanceCount(Integer lmsUserId) {
+		LocalDate today = LocalDate.now();
+		int deleteFlg = Constants.DB_FLG_FALSE;
+		
+		return tStudentAttendanceMapper.notEnterCount(today,lmsUserId,deleteFlg);
 	}
 
 	/**

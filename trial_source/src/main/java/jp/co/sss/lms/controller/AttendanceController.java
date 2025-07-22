@@ -1,7 +1,6 @@
 package jp.co.sss.lms.controller;
 
 import java.text.ParseException;
-import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,19 +60,11 @@ public class AttendanceController {
 				.getAttendanceManagement(loginUserDto.getCourseId(), loginUserDto.getLmsUserId());
 		model.addAttribute("attendanceManagementDtoList", attendanceManagementDtoList);
 
-		//過去の勤怠日の未入力のチェック
-
-		LocalDate today = LocalDate.now();
-
-		int deleteFlg = 0;
-
-		int notEnterCount = attenDanceMapper.notEnterCount(today, loginUserDto.getLmsUserId(),
-				deleteFlg);
-
 		//未入力有無の判定を行う
-
+		int notEnterCount =studentAttendanceService.getNotEnteresAttendanceCount(loginUserDto.getLmsUserId());
 		boolean hasNotEntries = notEnterCount > 0;
 		model.addAttribute("hasNotEntries", hasNotEntries);
+		
 		return "attendance/detail";
 	}
 
