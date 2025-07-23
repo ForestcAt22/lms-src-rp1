@@ -147,4 +147,27 @@ public class AttendanceUtil {
 		return false;
 	}
 
+	public Integer getHourFromTime(String timeString) {
+		if (timeString == null || timeString.isEmpty()) {
+			return null;
+		}
+		try {
+			return java.time.LocalTime.parse(timeString).getHour();
+		} catch (java.time.format.DateTimeParseException e) {
+			//エラーログ出力など
+			return null;
+		}
+	}
+
+	public Integer getMinuteFromTime(String timeString) {
+		if(timeString == null || timeString.isEmpty()) {
+			return null;
+		}
+		try {
+			return java.time.LocalTime.parse(timeString).getMinute();
+		}catch (java.time.format.DateTimeParseException e) {
+			//エラーログ出力など
+			return null;
+		}
+	}
 }

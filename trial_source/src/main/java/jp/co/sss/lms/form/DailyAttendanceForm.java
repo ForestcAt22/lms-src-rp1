@@ -1,6 +1,7 @@
 package jp.co.sss.lms.form;
 
 import jakarta.validation.constraints.Size;
+import jp.co.sss.lms.validation.ValidTime;
 import lombok.Data;
 
 /**
@@ -9,6 +10,7 @@ import lombok.Data;
  * @author 東京ITスクール
  */
 @Data
+@ValidTime
 public class DailyAttendanceForm {
 
 	/** 受講生勤怠ID */

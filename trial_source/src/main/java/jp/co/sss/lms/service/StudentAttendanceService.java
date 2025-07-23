@@ -12,6 +12,8 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 
 import jp.co.sss.lms.dto.AttendanceManagementDto;
 import jp.co.sss.lms.dto.LoginUserDto;
@@ -139,6 +141,35 @@ public class StudentAttendanceService {
 		}
 		return null;
 	}
+	
+	 /**
+     * 日次勤怠フォームの出勤・退勤時間の未入力チェック
+     * @param attendanceList DailyAttendanceFormのリスト
+     * @param result BindingResult
+     */
+    public void validateDailyAttendanceTimes(List<DailyAttendanceForm> attendanceList, BindingResult result) {
+        for (int i = 0; i < attendanceList.size(); i++) {
+            DailyAttendanceForm dailyForm = attendanceList.get(i);
+
+            // 出勤時間のチェック
+            boolean isStartHourNull = dailyForm.getTrainingStartHour() == null;
+            boolean isStartMinuteNull = dailyForm.getTrainingStartMinute() == null;
+
+            if (isStartHourNull != isStartMinuteNull) { // 片方のみが未入力の場合
+                result.addError(new FieldError("attendanceForm", "attendanceList[" + i + "].trainingStartHour",
+                        "出勤時間が正しく入力されていません。"));
+            }
+
+            // 退勤時間のチェック
+            boolean isEndHourNull = dailyForm.getTrainingEndHour() == null;
+            boolean isEndMinuteNull = dailyForm.getTrainingEndMinute() == null;
+
+            if (isEndHourNull != isEndMinuteNull) { // 片方のみが未入力の場合
+                result.addError(new FieldError("attendanceForm", "attendanceList[" + i + "].trainingEndHour",
+                        "退勤時間が正しく入力されていません。"));
+            }
+        }
+    }
 
 	/**
 	 * 出勤ボタン処理
@@ -262,6 +293,10 @@ public class StudentAttendanceService {
 				dailyAttendanceForm.setBlankTime(attendanceManagementDto.getBlankTime());
 				dailyAttendanceForm.setBlankTimeValue(String.valueOf(
 						attendanceUtil.calcBlankTime(attendanceManagementDto.getBlankTime())));
+				dailyAttendanceForm.setTrainingStartHour(attendanceUtil.getHourFromTime(attendanceManagementDto.getTrainingStartTime()));
+				dailyAttendanceForm.setTrainingStartMinute(attendanceUtil.getMinuteFromTime(attendanceManagementDto.getTrainingStartTime()));
+				dailyAttendanceForm.setTrainingEndHour(attendanceUtil.getHourFromTime(attendanceManagementDto.getTrainingEndTime()));
+				dailyAttendanceForm.setTrainingEndMinute(attendanceUtil.getMinuteFromTime(attendanceManagementDto.getTrainingEndTime()));;
 			}
 			dailyAttendanceForm.setStatus(String.valueOf(attendanceManagementDto.getStatus()));
 			dailyAttendanceForm.setNote(attendanceManagementDto.getNote());

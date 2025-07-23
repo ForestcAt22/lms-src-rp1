@@ -73,7 +73,8 @@
 								<td class="w200">
 <!--									出勤時間（時）のプルダウン表示-->
 									<select th:field="*{attendanceList[__${stat.index}__].trainingStartHour}"
-										class="form-control" style="display: inline-block; width: 45%;">
+										class="form-control" style="display: inline-block; width: 45%;"
+										th:errorclass="errorInput">
 										<option value="">--</option>
 										<option th:each="i : ${#numbers.sequence(0, 23)}" th:value="${i}"
 											th:text="${#numbers.formatInteger(i,2)}"
@@ -82,7 +83,8 @@
 									:
 <!--									出勤時間（分）のプルダウン表示-->
 									<select th:field="*{attendanceList[__${stat.index}__].trainingStartMinute}"
-										class="form-control" style="display: inline-block; width: 45%;">
+										class="form-control" style="display: inline-block; width: 45%;"
+										th:errorclass="errorInput">
 										<option value="">--</option>
 										<option th:each="i : ${#numbers.sequence(0, 59)}" th:value="${i}"
 											th:text="${#numbers.formatInteger(i,2)}"
@@ -93,7 +95,8 @@
 								<td class="w200">
 <!--									退勤時間（時）のプルダウン表示-->
 									<select th:field="*{attendanceList[__${stat.index}__].trainingEndHour}"
-										class="form-control" style="display: inline-block; width: 45%;">
+										class="form-control" style="display: inline-block; width: 45%;"
+										th:errorclass="errorInput">
 										<option value="">--</option>
 										<option th:each="i : ${#numbers.sequence(0, 23)}" th:value="${i}"
 											th:text="${#numbers.formatInteger(i,2)}"
@@ -102,7 +105,8 @@
 									:
 <!--									退勤時間（分）のプルダウン表示-->
 									<select th:field="*{attendanceList[__${stat.index}__].trainingEndMinute}"
-										class="form-control" style="display: inline-block; width: 45%;">
+										class="form-control" style="display: inline-block; width: 45%;"
+										th:errorclass="errorInput">
 										<option value="">--</option>
 										<option th:each="i : ${#numbers.sequence(0, 59)}" th:value="${i}"
 											th:text="${#numbers.formatInteger(i,2)}"
