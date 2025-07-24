@@ -22,7 +22,7 @@
 	<div class="row">
 		<div class="bs-component col-sm-12">
 
-			<form th:action="@{/attendance/update}" method="post" th:object="${attendanceForm}"
+			<form th:action="@{/attendance/complete}" method="post" th:object="${attendanceForm}"
 				id="attendanceUpdateForm">
 
 				<th:block th:if="${#fields.hasErrors()}" id="error">
@@ -76,9 +76,9 @@
 										class="form-control" style="display: inline-block; width: 45%;"
 										th:errorclass="errorInput">
 										<option value="">--</option>
-										<option th:each="i : ${#numbers.sequence(0, 23)}" th:value="${i}"
-											th:text="${#numbers.formatInteger(i,2)}"
-											th:selected="${i == dailyAttendanceForm.trainingStartHour}"></option>
+										<option th:each="entry : ${attendanceForm.hourMap.entrySet()}" th:value="${entry.key}"
+											th:text="${entry.value}" th:selected="${entry.key == dailyAttendanceForm.trainingStartHour}">
+										</option>
 									</select>
 									:
 <!--									出勤時間（分）のプルダウン表示-->
@@ -86,9 +86,9 @@
 										class="form-control" style="display: inline-block; width: 45%;"
 										th:errorclass="errorInput">
 										<option value="">--</option>
-										<option th:each="i : ${#numbers.sequence(0, 59)}" th:value="${i}"
-											th:text="${#numbers.formatInteger(i,2)}"
-											th:selected="${i == dailyAttendanceForm.trainingStartMinute}"></option>
+										<option th:each="entry : ${attendanceForm.minuteMap.entrySet()}" th:value="${entry.key}"
+											th:text="${entry.value}" th:selected="${entry.key == dailyAttendanceForm.trainingStartMinute}">
+										</option>
 									</select>
 								</td>
 
@@ -98,9 +98,9 @@
 										class="form-control" style="display: inline-block; width: 45%;"
 										th:errorclass="errorInput">
 										<option value="">--</option>
-										<option th:each="i : ${#numbers.sequence(0, 23)}" th:value="${i}"
-											th:text="${#numbers.formatInteger(i,2)}"
-											th:selected="${i == dailyAttendanceForm.trainingEndHour}"></option>
+										<option th:each="entry : ${attendanceForm.hourMap.entrySet()}" th:value="${entry.key}"
+											th:text="${entry.value}"
+											th:selected="${entry.key == dailyAttendanceForm.trainingEndHour}"></option>
 									</select>
 									:
 <!--									退勤時間（分）のプルダウン表示-->
@@ -108,16 +108,16 @@
 										class="form-control" style="display: inline-block; width: 45%;"
 										th:errorclass="errorInput">
 										<option value="">--</option>
-										<option th:each="i : ${#numbers.sequence(0, 59)}" th:value="${i}"
-											th:text="${#numbers.formatInteger(i,2)}"
-											th:selected="${i == dailyAttendanceForm.trainingEndMinute}"></option>
+										<option th:each="entry : ${attendanceForm.minuteMap.entrySet()}" th:value="${entry.key}"
+											th:text="${entry.value}"
+											th:selected="${entry.key == dailyAttendanceForm.trainingEndMinute}"></option>
 									</select>
 								</td>
 
 								<td class="w200">
 									<select th:field="*{attendanceList[__${stat.index}__].blankTime}"
 										class="form-control">
-										<option th:each="entry : ${attendanceForm.BlankTimes.entrySet()}"
+										<option th:each="entry : ${attendanceForm.blankTimes.entrySet()}"
 											th:value="${entry.key}"
 											th:selected="${entry.key == dailyAttendanceForm.blankTime}"
 											th:text="${entry.value}">

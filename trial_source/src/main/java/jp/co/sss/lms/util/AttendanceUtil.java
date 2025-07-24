@@ -170,4 +170,33 @@ public class AttendanceUtil {
 			return null;
 		}
 	}
+	
+	/**
+	 * 時間（0～23時）のマップを作成します。
+	 * @return 時間のプルダウン用マップ
+	 */
+	
+	public LinkedHashMap<Integer, String> setHourMap() {
+		LinkedHashMap<Integer, String> hourMap = new LinkedHashMap<>();
+		for(int i =0; i<24; i ++) {
+			String hour = String.format("%02d", i); // 2桁表示（例: 01, 09）
+			hourMap.put(i, hour);
+		}
+		return hourMap;
+		}
+	
+	/**
+	 * 分（0～59分）のマップを作成します。
+	 * @return 分のプルダウン用マップ
+	 */
+	
+	public LinkedHashMap<Integer, String> setMinuteMap(){
+		LinkedHashMap<Integer, String> minuteMap = new LinkedHashMap<>();
+		for(int i = 0; i<60; i++) {
+			String nimute = String.format("%02d" , i); // 2桁表示（例: 01, 09）
+			minuteMap.put(i, nimute);
+		}
+		return minuteMap;
+		}
+	
 }

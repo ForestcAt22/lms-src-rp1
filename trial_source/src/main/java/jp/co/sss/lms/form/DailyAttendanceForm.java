@@ -42,7 +42,7 @@ public class DailyAttendanceForm {
 	/** ステータス */
 	private String status;
 	/** 備考 */
-	@Size(max=100,message="１００文字以内で入力してください")
+	@Size(max=100,message="{IDmaxlength}")
 	private String note;
 	/** セクション名 */
 	private String sectionName;

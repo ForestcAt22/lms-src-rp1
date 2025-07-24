@@ -77,9 +77,9 @@
 		
 			$(document).ready(function () {
 
-	var notEnterCount = /*[[${notEnterCount}]]*/ false;
+	var notEnterCount = /*[[${notEnterCount}]]*/ 0;
 			
-			if (notEnterCount) {
+			if (notEnterCount > 0) {
 
 				alert('過去日の勤怠に未入力があります。');
 			}
