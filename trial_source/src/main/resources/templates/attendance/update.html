@@ -22,8 +22,8 @@
 	<div class="row">
 		<div class="bs-component col-sm-12">
 
-			<form th:action="@{/attendance/complete}" method="post" th:object="${attendanceForm}"
-				id="attendanceUpdateForm">
+			<form th:action="@{/attendance/update}" method="post" th:object="${attendanceForm}" id="attendanceUpdateForm">
+<!--    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />-->
 
 				<th:block th:if="${#fields.hasErrors()}" id="error">
 					<ul style="padding-left: 0; list-style: none;">
@@ -128,7 +128,7 @@
 								<td class="w70">[[${dailyAttendanceForm.statusDispName}]]</td>
 								<td class="w240">
 									<input type="text" th:field="*{attendanceList[__${stat.index}__].note}"
-										class="form-control"></input>
+										class="form-control"/>
 									<span th:if="${#fields.hasErrors('attendanceList[' + stat.index + '].note')}"
 										th:errors="*{attendanceList[__${stat.index}__].note}" class="text-danger">
 									</span>
@@ -145,7 +145,7 @@
 					<th:block th:if="${session.loginUserDto.role != '0001'}">
 						<input type="submit" value="戻る" name="indexCompany" class="btn btn-default" />
 					</th:block>
-					<input type="button" value="更新" name="complete" class="btn btn-info" id="updateButton" />
+					<input type="submit" value="更新" name="complete" class="btn btn-info" id="updateButton" />
 				</div>
 
 			</form>
@@ -183,14 +183,16 @@
 			});
 
 			//ダイアログを表示
+			// 確認ダイアログを維持する場合の修正例:
 			if (updateButton && attendanceUpdateForm) {
-				updateButton.onclick = function () {
+				updateButton.addEventListener('click', function(event) { // clickイベントをリッスン
+					event.preventDefault(); // デフォルトのフォーム送信をキャンセル
 
 					if (confirm('更新します。よろしいですか？')) {
-						//ONの場合フォームに送信
+						// ONの場合フォームに送信
 						attendanceUpdateForm.submit();
 					}
-				};
+				});
 			} else {
 				console.error('フォームが見つかりません。');
 			}
