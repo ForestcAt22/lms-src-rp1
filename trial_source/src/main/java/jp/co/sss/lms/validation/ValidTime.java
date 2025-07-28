@@ -6,35 +6,26 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import jakarta.validation.Constraint;
-import jakarta.validation.Payload;
+import jakarta.validation.Constraint; // ここは「jakarta」であることを再確認！
+import jakarta.validation.Payload;     // ここも「jakarta」であることを再確認！
 
 @Target({ ElementType.TYPE })
-//アノテーションがいつまで表示されるのか
 @Retention(RetentionPolicy.RUNTIME)
-//Javadocに記述
 @Documented
-//アノテーションがどのValidatorクラスに検証されるかを指定
 @Constraint(validatedBy = TimeValidator.class)
-
 public @interface ValidTime {
 
-	//バリデーション失敗時のメッセージキー
-	String message()
+    // メッセージキーをシンプルにする（messages.propertiesにこのキーを追加してください）
+    String message() default "{attendance.timeValidationError}";
 
-	default "{jp.co.sss.lms.validation.ValidTime.message}";
+    Class<?>[] groups() default {};
 
-	//バリデーショングループ定義
-	Class<?>[] groups() default {};
+    Class<? extends Payload>[] payload() default {};
 
-	//ペイロード定義
-	Class<? extends Payload>[] payload() default {};
-
-	//複数の@ValidTimeを適用するためのコンテナアノテーション
-	@Target({ ElementType.TYPE })
-	@Retention(RetentionPolicy.RUNTIME)
-	@Documented
-	@interface List {
-		ValidTime[] value();
-	}
+    @Target({ ElementType.TYPE })
+    @Retention(RetentionPolicy.RUNTIME)
+    @Documented
+    @interface List {
+        ValidTime[] value();
+    }
 }

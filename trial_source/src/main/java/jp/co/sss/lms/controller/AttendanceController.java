@@ -42,7 +42,7 @@ public class AttendanceController {
 	* Integer 型のフィールドに対するカスタムバインディングエディタを登録
 	* 空文字列をIntegerのnullとして扱う
 	*/
-	@InitBinder // ★このアノテーションをメソッドに追加
+	@InitBinder
 	public void initBinder(WebDataBinder binder) {
 		binder.registerCustomEditor(Integer.class, new PropertyEditorSupport() {
 			@Override
@@ -164,16 +164,6 @@ public class AttendanceController {
 		return "attendance/update";
 	}
 
-	//	@RequestMapping(path="/test", method = RequestMethod.GET)
-	//	public String testPage() {
-	//	    System.out.println("TEST PAGE ACCESSED!");
-	//	    return "attendance/detail"; // 存在する適当なThymeleafテンプレート
-	//	}
-	//	
-	//	@RequestMapping(path="/test", method = RequestMethod.POST)
-	//	public String testPage2() {
-	//	  return "redirect:/attendance/detail"; // 存在する適当なThymeleafテンプレート
-	//	}
 
 	/**
 	 * 勤怠情報直接変更画面 『更新』ボタン押下
@@ -184,7 +174,7 @@ public class AttendanceController {
 	 * @return 勤怠管理画面
 	 * @throws ParseException
 	 */
-	@RequestMapping(path = "/update", params = "complete", method = RequestMethod.POST)
+	@RequestMapping(path = "/update",  method = RequestMethod.POST)
 	public String complete(@Validated @ModelAttribute("attendanceForm") AttendanceForm attendanceForm,
 			BindingResult result,
 			Model model) throws ParseException {

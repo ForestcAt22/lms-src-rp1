@@ -42,7 +42,7 @@ public class DailyAttendanceForm {
 	/** ステータス */
 	private String status;
 	/** 備考 */
-	@Size(max=100,message="{IDmaxlength}")
+	@Size(max=100,message="maxlength")
 	private String note;
 	/** セクション名 */
 	private String sectionName;
